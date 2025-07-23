@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Опрос настроения</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff8e1;
+      padding: 20px;
+    }
+    #mood-widget {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 400px;
+      margin: auto;
+    }
+    .mood-btn {
+      font-size: 24px;
+      padding: 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .mood-btn:active {
+      transform: scale(0.9);
+    }
+  </style>
+</head>
+<body>
+<div id="mood-widget">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div id="question-text" style="font-size: 18px; font-weight: 600;">Как твоё настроение сегодня?</div>
+    <select id="lang-select" style="font-size:14px;padding:4px;">
+      <option value="ru">🇷🇺 Рус</option>
+      <option value="uz">🇺🇿 Oʻzb</option>
+    </select>
+  </div>
+
+  <div id="description" style="margin-top: 8px; font-size: 14px; color: #856404;">
+    (Опрос анонимный — результаты видны только HR)
+  </div>
+
+  <div style="margin-top: 14px; display: flex; justify-content: space-around;">
+    <button class="mood-btn" data-val="😊 Отличное">😊</button>
+    <button class="mood-btn" data-val="🙂 Хорошее">🙂</button>
+    <button class="mood-btn" data-val="😐 Нормальное">😐</button>
+    <button class="mood-btn" data-val="🙁 Плохое">🙁</button>
+    <button class="mood-btn" data-val="😡 Ужасное">😡</button>
+  </div>
+</div>
+
+<script>
+  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdizMP4skSvCP2WiW47A8AN8Z78ACiFLnK8iudL7XdyyAr8TA/viewform";
+  const ENTRY_NAME = "entry.1887559003";
+  const ENTRY_MOOD = "entry.211324290";
+
+  const texts = {
+    ru: {
+      question: "Как твоё настроение сегодня?",
+      anon: "(Опрос анонимный — результаты видны только HR)"
+    },
+    uz: {
+      question: "Bugungi kayfiyatingiz qanday?",
+      anon: "(So‘rov anonim — natijalarni faqat HR ko‘radi)"
+    }
+  };
+
+  document.getElementById("lang-select").addEventListener("change", (e) => {
+    const lang = e.target.value;
+    document.getElementById("question-text").textContent = texts[lang].question;
+    document.getElementById("description").textContent = texts[lang].anon;
+  });
+
+  document.querySelectorAll(".mood-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mood = btn.getAttribute("data-val");
+      const name = window?.HR?.vars?.user?.name || "Аноним";
+      const url = `${FORM_URL}?usp=pp_url&${ENTRY_NAME}=${encodeURIComponent(name)}&${ENTRY_MOOD}=${encodeURIComponent(mood)}`;
+      window.open(url, "_blank");
+    });
+  });
+</script>
+</body>
+</html>
